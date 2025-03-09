@@ -1,0 +1,77 @@
+-- Erstelle ein ScreenGui für das Overlay
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ExecutorOverlay"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Erstelle ein ImageLabel als Hintergrund des Overlays
+local overlayImage = Instance.new("ImageLabel")
+overlayImage.Name = "OverlayImage"
+overlayImage.Size = UDim2.new(0.5, 0, 0.4, 0)  -- Größe des Overlays
+overlayImage.Position = UDim2.new(0.25, 0, 0.3, 0)  -- Position des Overlays auf dem Bildschirm
+overlayImage.BackgroundTransparency = 1  -- Kein Hintergrund
+overlayImage.Image = "rbxassetid://98902447830770"  -- Dein Bild-ID
+overlayImage.Parent = screenGui
+
+-- Füge ein Label hinzu, um den Text anzuzeigen (optional)
+local label = Instance.new("TextLabel")
+label.Name = "OverlayLabel"
+label.Size = UDim2.new(1, 0, 0.2, 0)  -- Größe des TextLabels
+label.Position = UDim2.new(0, 0, 0, 0)  -- Position des Labels im Overlay
+label.Text = "Gooey HUB"  -- Text angezeigt auf dem Overlay
+label.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Textfarbe
+label.TextSize = 24  -- Textgröße
+label.TextWrapped = true  -- Text wird umgebrochen, wenn er zu lang ist
+label.TextYAlignment = Enum.TextYAlignment.Top  -- Text am oberen Rand ausrichten
+label.BackgroundTransparency = 1  -- Kein Hintergrund
+label.Parent = overlayImage
+
+-- Flag, um den aktuellen Status des GUI zu speichern (ob es sichtbar ist oder nicht)
+local isVisible = true
+
+-- Funktion, um das GUI ein- oder auszublenden
+local function toggleGuiVisibility()
+    isVisible = not isVisible
+    overlayImage.Visible = isVisible
+end
+
+-- Überwache das Drücken der rechten Shift-Taste
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed then
+        if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.RightShift then
+            toggleGuiVisibility()
+        end
+    end
+end)
+
+-- Mausverschiebung
+local dragging = false
+local dragInput, dragStart, startPos
+
+-- Funktion, die beim Verschieben der Maus das GUI verschiebt
+local function updateDrag(input)
+    local delta = input.Position - dragStart
+    overlayImage.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+-- Beginnt das Verschieben, wenn die Maus über dem Overlay ist und der Benutzer mit der linken Maustaste klickt
+overlayImage.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and isVisible then
+        dragging = true
+        dragStart = input.Position
+        startPos = overlayImage.Position
+    end
+end)
+
+-- Stoppt das Verschieben, wenn die Maustaste losgelassen wird
+overlayImage.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- Wenn der Benutzer die Maus bewegt, wird das GUI verschoben, solange die linke Maustaste gedrückt ist
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging then
+        updateDrag(input)
+    end
+end)
