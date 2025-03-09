@@ -75,3 +75,42 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
         updateDrag(input)
     end
 end)
+
+-- Erstelle einen Frame für den "Voice Chat"-Bereich
+local voiceChatFrame = Instance.new("Frame")
+voiceChatFrame.Name = "VoiceChatFrame"
+voiceChatFrame.Size = UDim2.new(0.8, 0, 0.2, 0)  -- Größe des Frames
+voiceChatFrame.Position = UDim2.new(0.1, 0, 0.2, 0)  -- Position des Frames unter dem Label
+voiceChatFrame.BackgroundTransparency = 0.5  -- Halbdurchsichtig
+voiceChatFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Hintergrundfarbe des Frames
+voiceChatFrame.Parent = overlayImage
+
+-- Füge ein Label hinzu, das "Voice Chat" anzeigt
+local voiceChatLabel = Instance.new("TextLabel")
+voiceChatLabel.Name = "VoiceChatLabel"
+voiceChatLabel.Size = UDim2.new(1, 0, 0.3, 0)  -- Größe des Labels
+voiceChatLabel.Position = UDim2.new(0, 0, 0, 0)  -- Position des Labels im Frame
+voiceChatLabel.Text = "Voice Chat"  -- Text des Labels
+voiceChatLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Textfarbe
+voiceChatLabel.TextSize = 20  -- Textgröße
+voiceChatLabel.TextWrapped = true  -- Text wird umgebrochen, wenn er zu lang ist
+voiceChatLabel.TextYAlignment = Enum.TextYAlignment.Top  -- Text oben ausrichten
+voiceChatLabel.BackgroundTransparency = 1  -- Kein Hintergrund
+voiceChatLabel.Parent = voiceChatFrame
+
+-- Erstelle den Button "Voice Chat Unban"
+local unbanButton = Instance.new("TextButton")
+unbanButton.Name = "VoiceChatUnbanButton"
+unbanButton.Size = UDim2.new(0.8, 0, 0.5, 0)  -- Größe des Buttons
+unbanButton.Position = UDim2.new(0.1, 0, 0.4, 0)  -- Position im Frame
+unbanButton.Text = "Voice Chat Unban"  -- Text des Buttons
+unbanButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Textfarbe
+unbanButton.BackgroundColor3 = Color3.fromRGB(0, 123, 255)  -- Button-Hintergrundfarbe
+unbanButton.TextSize = 18  -- Textgröße
+unbanButton.Parent = voiceChatFrame
+
+-- Funktion, die ausgeführt wird, wenn der Button gedrückt wird
+unbanButton.MouseButton1Click:Connect(function()
+    local voiceChatService = game:GetService("VoiceChatService")
+    voiceChatService:joinVoice()  -- Führt den Voice-Chat-Befehl aus
+end)
